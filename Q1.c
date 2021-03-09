@@ -8,9 +8,9 @@
 
 /* Output */
 // Safe or Unsafe 
-    // Safe State
+    // Safe State (Allocate resource up to the max amount in some order)
     // Print out the execution sequence in which these processes may complete
-// UnSafe State
+// UnSafe State (Cycle entails unsafe state)
     // Display the process at which it fails and 
     // Print out Available resource and Resources needed
 
@@ -28,11 +28,14 @@
 #include <stdlib.h>
 #define RESOURCE 4
 #define PROCESS 6
+#define TRUE 1
+#define FALSE 0
 
 //Function Prototype
 void readResource(int total[]);
 void calculateNeed(int allocation[][RESOURCE], int max[][RESOURCE], int need[][RESOURCE]);
 void calculateAvailable(int allocation[][RESOURCE], int total[], int available[]);
+void bankerAlgo(int max[][RESOURCE], int need[][RESOURCE], int available[], int flag[], int processIndex);
 
 int main(){
     // Defining Variables 
@@ -41,12 +44,101 @@ int main(){
     int need[PROCESS][RESOURCE];
     int available[RESOURCE];
     int total[RESOURCE];
+    int sequence[PROCESS];
 
     readResource(total);
     calculateNeed(allocation, max, need);
     calculateAvailable(allocation, total, available);
 
     //To Be Continued Here
+
+    int flag[PROCESS] = {TRUE, TRUE, TRUE, TRUE, TRUE, TRUE};
+    bankerAlgo(max, need, available, flag, 0);
+    printf("\n--- SYSTEM IS IN SAFE STATE ---");
+}
+
+// Code quite messy, maybe there's a better solution?
+void bankerAlgo(int max[][RESOURCE], int need[][RESOURCE], int available[], int flag[], int processIndex){ //First call is alwaays 0 for processIndex
+    // if all Flag = False then break
+        // if available - need >= 0 and flag[i] = true
+            // then available = available - need
+            // set flag[i] = False 
+            // print some stuff here 
+            // available = avilable + max
+            // print some stuff
+            // append i to sequence array
+            // set counter to 0
+            // bankerAlgo(max, need, available, flag)
+        // else increment counter by 1 and repeat steps
+
+    // Count number of False in Flag array
+    int counterFlag = 0;
+    // Base Case: Once all process has been allocated, return to main function
+    for (int i = 0; i < PROCESS; i ++){
+        if (flag[i] == FALSE){
+            counterFlag += 1;
+        }
+    }
+    // Recursive case
+    if (counterFlag == PROCESS){
+        return;
+    } else {
+        if (processIndex > PROCESS){
+            printf("--- SYSTEM IS IN UNSAFE STATE ---\n");
+            printf("Available resources: ");
+            for (int i = 0; i < RESOURCE; i++){
+                printf("%d ", available[i]);
+            }
+            printf("\n\nNEEDED RESOURCE FOR UNALLOCATED PROCESSES \n");
+            for (int i = 0; i < PROCESS; i++){
+                if (flag[i] == TRUE){
+                    printf("Process %d: ", i);
+                    for (int j = 0; j < RESOURCE; j++){
+                        printf("%d ", need[i][j]);
+                    }
+                    printf("\n");
+                }
+            }
+            exit(0);
+        } else {
+            // Count resource type: available is more then need
+            int availableCounter = 0;
+            for (int resourceIndex = 0; resourceIndex < RESOURCE; resourceIndex++){
+                if (available[resourceIndex] - need[processIndex][resourceIndex] > 0){
+                    availableCounter += 1;
+                }
+            }
+            if ((availableCounter == RESOURCE) && (flag[processIndex] == TRUE)){
+                for (int resourceIndex = 0; resourceIndex < RESOURCE; resourceIndex++){
+                    available[resourceIndex] -= need[processIndex][resourceIndex];
+                }
+                flag[processIndex] = FALSE;
+
+                // Print out the available resource here after allocating max resource to process
+                printf("Available Resource after Allocation to process P%d: [", processIndex);
+                for (int i = 0; i < RESOURCE; i++){
+                     printf("%d, ", available[i]);
+                }
+                printf("]\n");
+
+                for (int resourceIndex = 0; resourceIndex < RESOURCE; resourceIndex++){
+                    available[resourceIndex] += max[processIndex][resourceIndex];
+                }
+                // Print out the available resource after retreiving resource by from process
+                printf("Available Resource after Retrieving resource from process P%d: [", processIndex);
+                for (int i = 0; i < RESOURCE; i++){
+                     printf("%d, ", available[i]);
+                }
+                printf("]\n");
+
+                // append process to string or something
+
+                bankerAlgo(max, need, available, flag, 0);
+            } else {
+                bankerAlgo(max, need, available, flag, processIndex + 1);
+            }
+        }
+    }
 }
 
 //Scan for total instance for resource A, B, C, D
@@ -61,6 +153,7 @@ void readResource(int total[]){
             exit(0);
         }
     }   
+    printf("\n");
 }
 
 void calculateNeed(int allocation[][RESOURCE], int max[][RESOURCE], int need[][RESOURCE]){
@@ -84,17 +177,3 @@ void calculateAvailable(int allocation[][RESOURCE], int total[] ,int available[]
         available[i] = total[i] - totalAllocation[i];
     }
 }
-
-
-
-/* Code for Checking */
-// for (int i = 0; i < RESOURCE; i++){
-//     printf("%d \n", total[i]);
-// }
-
-// for (int i = 0; i < PROCESS; i++){
-//     for (int j = 0; j < RESOURCE; j++){
-//         printf("%d ", need[i][j]);
-//     }
-//     printf("\n");
-// }
