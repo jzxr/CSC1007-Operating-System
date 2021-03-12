@@ -102,7 +102,6 @@ void resetPartition()
 //End
 
 //Firstfit Function
-//need display unallocated blocks and process.
 void firstFit()
 {
     int processID, processSize, partitionID, partitionSize, count = 0;
@@ -344,3 +343,4 @@ void worstFit(){
     //Reset memoryPartition array to default state at start.
     resetPartition();
 }
+//End
