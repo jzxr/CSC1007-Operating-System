@@ -5,6 +5,7 @@
 
 //Function Declaration
 void getMaxSize();
+void getMinSize();
 void getInput();
 void resetPartition();
 void firstFit();
@@ -24,6 +25,9 @@ int unassignProcess[10] = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
 
 //Max Value
 int Max = 0;
+
+//Min Value
+int Min = 0;
 
 //Main function
 int main()
@@ -70,6 +74,22 @@ void getMaxSize()
         if (memoryPartitions[count] > Max)
         {
             Max = memoryPartitions[count];
+        }
+    }
+}
+//End
+
+//Get Smallest Partition size.
+void getMinSize()
+{
+    int partitionCount = sizeof(memoryPartitions) / sizeof(memoryPartitions[0]);
+    Min = memoryPartitions[0];
+    int count;
+    for (count = 1; count < partitionCount; count++)
+    {
+        if (memoryPartitions[count] < Min)
+        {
+            Min = memoryPartitions[count];
         }
     }
 }
@@ -122,28 +142,31 @@ void resetPartition()
 //need display unallocated blocks and process.
 void firstFit()
 {
-    int processID, processSize, partitionID, partitionSize, smallID, differences, count = 0;
+    int processID, processSize, partitionID, partitionSize, count = 0;
     int assign = -1;
-    processSize = userInput[processID];
+    
+     //Match all process to suitable memory partition
     for (processID = 0; processID < 10; processID++)
     {
+        processSize = userInput[processID];
         for (partitionID = 0; partitionID < 12; partitionID++)
         {
             partitionSize = memoryPartitions[partitionID];
-            if (partitionSize != 0)
+            
+            //assign memory partiton to process.
+            if (partitionSize >= processSize)
             {
-                differences = partitionSize - processSize;
-
-                //Check if difference is negative.
-                if (differences >= 0)
-                {
-                    //assign memory partiton to process.
-
-                    assignPartitions[processID] = partitionSize;
-                    assign = partitionID;
-                }
+                assignPartitions[processID] = partitionSize;
+                partitionSize -= processSize;
+                assign = partitionID;
+                break;
             }
+            //do not need to display if partition is not allocated
+            else{
+                assignPartitions[processID] = 0;
+            } 
         }
+
         //Check if memorypartition is assigned to a process. if so empty it from array.
         if (assign >= 0)
         {
@@ -155,23 +178,23 @@ void firstFit()
         }
     }
 
-    //print allocated process
+    //Print allocated process
     printf("\nAllocated Process");
     printf("\nProcess No.\tProcess Size.\tAllocated Memory Size.\n");
     for (processID = 0; processID < 10; processID++)
     {
-        if (unassignProcess[processID] != 0)
+        if (assignPartitions[processID] != 0)
         {
             printf("%d \t\t%d KB \t\t%d KB\n", processID + 1, userInput[processID], assignPartitions[processID]);
         }
     }
 
-    //Print Unallocated Process
+    //Print anallocated process
     printf("\nUnallocated Process");
     printf("\nProcess No.\tProcess Size.\n");
     for (processID = 0; processID < 10; processID++)
     {
-        if (unassignProcess[processID] == 0)
+        if (assignPartitions[processID] == 0)
         {
             printf("%d \t\t%d KB\n", processID + 1, userInput[processID]);
         }
@@ -209,7 +232,6 @@ void bestFit()
         for (partitionID = 0; partitionID < 12; partitionID++)
         {
             partitionSize = memoryPartitions[partitionID];
-
             //Check if memory partition been allocated
             if (partitionSize != 0)
             {
