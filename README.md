@@ -8,7 +8,12 @@
 
 Description for banker's algorithm
 
+---
+
 ### 1.1.1. Header for your function
+
+---
+Description of your function
 
 The function below is used to open the file. It will display an error message with an exit status set to 1 if file is not found.
 
