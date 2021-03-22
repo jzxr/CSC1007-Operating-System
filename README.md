@@ -231,6 +231,89 @@ Best Fit Algorithm is to allocate the process size to the smallest
 Function to allocate the memory partitions
 
 ```C
+//Bestfit function
+void bestFit()
+{
+    int processID, processSize, partitionID, partitionSize, smallID, differences, count = 0;
+
+    //Match all process to memory partition
+    for (processID = 0; processID < 10; processID++)
+    {
+        int assign = -1;
+        getMaxSize();
+        int smallest = Max;
+        processSize = userInput[processID];
+
+        //Find the best-fit memory partition to process size
+        for (partitionID = 0; partitionID < 12; partitionID++)
+        {
+            partitionSize = memoryPartitions[partitionID];
+            //Check if memory partition been allocated
+            if (partitionSize != 0)
+            {
+                differences = partitionSize - processSize;
+
+                //Check if difference is negative.
+                if (differences >= 0)
+                {
+                    //assign memory partiton to process.
+                    if (differences < smallest)
+                    {
+                        smallest = differences;
+                        assignPartitions[processID] = partitionSize;
+                        assign = partitionID;
+                    }
+                }
+            }
+        }
+
+        //Check if memorypartition is assigned to a process. if so empty it from array.
+        if (assign >= 0)
+        {
+            memoryPartitions[assign] = 0;
+        }
+        else
+        {
+            unassignProcess[processID] = 0;
+        }
+    }
+
+    //print allocated process
+    printf("\nAllocated Process");
+    printf("\nProcess No.\tProcess Size.\tAllocated Memory Size.\n");
+    for (processID = 0; processID < 10; processID++)
+    {
+        if (unassignProcess[processID] != 0)
+        {
+            printf("%d \t\t%d KB \t\t%d KB\n", processID + 1, userInput[processID], assignPartitions[processID]);
+        }
+    }
+
+    //Print Unallocated Process
+    printf("\nUnallocated Process");
+    printf("\nProcess No.\tProcess Size.\n");
+    for (processID = 0; processID < 10; processID++)
+    {
+        if (unassignProcess[processID] == 0)
+        {
+            printf("%d \t\t%d KB\n", processID + 1, userInput[processID]);
+        }
+    }
+
+    //Print Avliable memory parition.
+    printf("\nAvaliable Memory Partition");
+    printf("\nParition Size.\n");
+    for (count = 0; count < 12; count++)
+    {
+        if (memoryPartitions[count] != 0)
+        {
+            printf("%d KB\n", memoryPartitions[count]);
+        }
+    }
+
+    //Reset memoryPartition array to default state at start.
+    resetPartition();
+}
 ```
 
 ---
