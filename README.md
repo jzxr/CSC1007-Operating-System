@@ -44,6 +44,20 @@ Description
 Function to get the biggest partition size
 
 ```C
+//Get Biggest Partition size.
+void getMaxSize()
+{
+    int partitionCount = sizeof(memoryPartitions) / sizeof(memoryPartitions[0]);
+    Max = memoryPartitions[0];
+    int count;
+    for (count = 1; count < partitionCount; count++)
+    {
+        if (memoryPartitions[count] > Max)
+        {
+            Max = memoryPartitions[count];
+        }
+    }
+}
 ```
 
 ---
