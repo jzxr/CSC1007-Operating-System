@@ -6,7 +6,9 @@
 
 ---
 
-Description for banker's algorithm
+Given six processes to be allocated and four resources types (A, B, C, D), the values of the allocation matrix of the processes for Allocation[6][4] and the values of the Max matrix of the processes is Max[6][4].
+
+The user can input the total available resources of each type, has the options to enter the allocation matrix and max matrix of the program. It shows the process of the whole safe state and unsafe state based on the calculation.
 
 ---
 
@@ -25,6 +27,11 @@ The function below is used to open the file. It will display an error message wi
        exit(1);
    }
 ```
+---
+
+### 1.1.2. 
+
+---
 
 ---
 
