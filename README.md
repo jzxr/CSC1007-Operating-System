@@ -12,27 +12,28 @@ The user can input the total available resources of each type, has the options t
 
 ---
 
-### 1.1.1. Header for your function
+### 1.1.1. Enter Choice
 
 ---
-Description of your function
+User can enter choice for question 1 to choose between hard coded or user input
 
-The function below is used to open the file. It will display an error message with an exit status set to 1 if file is not found.
-
-```C
-    //Read in Data from text file
-   FILE *input_fp;
-   if ((input_fp = fopen("fertility_Diagnosis_Data_Group1_4.txt", "r")) == NULL){
-       printf("\nError in opening the file.");
-       exit(1);
-   }
-```
+*//Put code*
 ---
 
-### 1.1.2. 
+### 1.1.2. Hard Coded
+---
+When user enter 1 as choice, the system will calculate the 6 processes and 4 resources types.
 
 ---
 
+### 1.1.3. User Input
+---
+When user enter 2 as choice, they have the option to enter the allocation matrix, max matrix and total available resources of each type.
+
+---
+
+### 1.1.4. Banker's Algorithm
+---
 ---
 
 ## 1.2. Memory Management in Operating System
