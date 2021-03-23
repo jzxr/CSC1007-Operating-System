@@ -24,6 +24,7 @@ int main(){
     int need[PROCESS][RESOURCE];
     
     printf("Select Choice: \n1) Hardcoded  \n2) User input\n");
+    printf("User Choice: ");
     scanf("%d", &choice);
 
     if (choice == 1){
@@ -49,7 +50,7 @@ int main(){
         calculateNeed(allocation, max, need, PROCESS, RESOURCE);
         calculateAvailable(allocation, total, available, PROCESS, RESOURCE);
 
-        int flag[PROCESS] = {TRUE, TRUE, TRUE, TRUE, TRUE, TRUE};
+        int flag[PROCESS] = {FALSE, FALSE, FALSE, FALSE, FALSE, FALSE};
         bankerAlgo(max, need, available, flag, 0, PROCESS, RESOURCE);
         printf("\n--- SYSTEM IS IN SAFE STATE ---\n");
     }
@@ -80,13 +81,15 @@ int main(){
         
         readResource(total, noOfResources, choice);
         readMax(max, noOfProcess, noOfResources, total);
+        printf("\n");
         readAllocation(allocation, noOfProcess, noOfResources, max);
         calculateNeed(allocation, max, need, noOfProcess, noOfResources);
         calculateAvailable(allocation, total, available, noOfProcess, noOfResources);
+        printf("\n");
 
         int flag[noOfProcess];
         for (int i = 0; i < noOfProcess; i++){
-            flag[i] = TRUE;
+            flag[i] = FALSE;
         }
 
         bankerAlgo(max, need, available, flag, 0, noOfProcess, noOfResources);
@@ -121,14 +124,15 @@ void bankerAlgo(int max[][noOfResources], int need[][noOfResources], int availab
     int counterFlag = 0;
     // Base Case: Once all process has been allocated, return to main function
     for (int i = 0; i < noOfProcess; i ++){
-        if (flag[i] == FALSE){
+        if (flag[i] == TRUE){
             counterFlag += 1;
         }
     }
-    // Recursive case
     if (counterFlag == noOfProcess){
         return;
-    } else {
+    }
+     // Recursive case
+     else {
         if (processIndex > noOfProcess){
             printf("--- SYSTEM IS IN UNSAFE STATE ---\n");
             printf("Available resources: ");
@@ -137,7 +141,7 @@ void bankerAlgo(int max[][noOfResources], int need[][noOfResources], int availab
             }
             printf("\n\nNEEDED RESOURCE FOR UNALLOCATED PROCESSES \n");
             for (int i = 0; i < noOfProcess; i++){
-                if (flag[i] == TRUE){
+                if (flag[i] == FALSE){
                     printf("Process %d: ", i);
                     for (int j = 0; j < noOfResources; j++){
                         printf("%d ", need[i][j]);
@@ -154,11 +158,11 @@ void bankerAlgo(int max[][noOfResources], int need[][noOfResources], int availab
                     availableCounter += 1;
                 }
             }
-            if ((availableCounter == noOfResources) && (flag[processIndex] == TRUE)){
+            if ((availableCounter == noOfResources) && (flag[processIndex] == FALSE)){
                 for (int resourceIndex = 0; resourceIndex < noOfResources; resourceIndex++){
                     available[resourceIndex] -= need[processIndex][resourceIndex];
                 }
-                flag[processIndex] = FALSE;
+                flag[processIndex] = TRUE;
 
                 // Print out the available resource here after allocating max resource to process
                 printf("Available Resource after Allocation to process P%d: [", processIndex);
@@ -190,13 +194,13 @@ void bankerAlgo(int max[][noOfResources], int need[][noOfResources], int availab
 //Scan for total instance for resource A, B, C, D
 void readResource(int total[], int noOfResources, int choice){
     for (int i = 0; i < noOfResources; i++){
-        printf("Enter total number of Resource %c: ", resourcetype[i]);
+        printf("Enter total number of instances %c: ", resourcetype[i]);
         scanf("%d", &total[i]);
         // Resource A, B, C, D needs to be larger than 14, 11, 14, 18 respectively 
         if (choice == 1){
             int check[RESOURCE] = {14,11,14,18};
             if (total[i] < check[i]){
-                printf("Min number of instance for resource %c must be %d or above \n", resourcetype[i], check[i]);
+                printf("Minimum number of instance for resource %c must be %d or above \n", resourcetype[i], check[i]);
                 exit(0);
             }
         }
