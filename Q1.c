@@ -5,6 +5,7 @@
 #define TRUE 1
 #define FALSE 0
 
+// Global variable
 int noOfProcess;
 int noOfResources;
 int maxOfResources;
@@ -27,8 +28,10 @@ int main(){
     printf("User Choice: ");
     scanf("%d", &choice);
 
+    // Follows assignment requirement
     if (choice == 1){
-        // Double check here
+        // Allocation and Max resources stated in the specification
+        // initializing variables 
         int allocation[6][4] = {{2, 1, 3, 3},
                                 {2, 3, 1, 2},
                                 {3, 3, 3, 1},
@@ -50,11 +53,14 @@ int main(){
         calculateNeed(allocation, max, need, PROCESS, RESOURCE);
         calculateAvailable(allocation, total, available, PROCESS, RESOURCE);
 
+        // Set each process flag to FALSE, indicating resources has not been allocated 
+        // before calling Banker's Algorithm 
         int flag[PROCESS] = {FALSE, FALSE, FALSE, FALSE, FALSE, FALSE};
         bankerAlgo(max, need, available, flag, 0, PROCESS, RESOURCE);
+        // System is in safe state if Banker's Algorithm is able to run till completion
         printf("\n--- SYSTEM IS IN SAFE STATE ---\n");
     }
-
+    // User is able to dymanically insert value of process and resources
     else if (choice = 2){
 
         printf("Enter the number of process(between 1-6): ");
@@ -73,6 +79,7 @@ int main(){
             exit(0);
         }
 
+        // initializing variables 
         int allocation[noOfProcess][noOfResources];
         int max[noOfProcess][noOfResources];
         int need[noOfProcess][noOfResources];
@@ -87,12 +94,15 @@ int main(){
         calculateAvailable(allocation, total, available, noOfProcess, noOfResources);
         printf("\n");
 
+        // Set each process flag to FALSE, indicating resources has not been allocated 
+        // before calling Banker's Algorithm 
         int flag[noOfProcess];
         for (int i = 0; i < noOfProcess; i++){
             flag[i] = FALSE;
         }
 
         bankerAlgo(max, need, available, flag, 0, noOfProcess, noOfResources);
+        // System is in safe state if Banker's Algorithm is able to run till completion
         printf("\n--- SYSTEM IS IN SAFE STATE ---\n");
         
     } else {
@@ -101,44 +111,31 @@ int main(){
     }
 }
 
-//Check Error Here
-void bankerAlgo(int max[][noOfResources], int need[][noOfResources], int available[], int flag[], int processIndex, int noOfProcess, int noOfResources){ //First call is alwaays 0 for processIndex
-    // if all Flag = False then break
-        // if available - need >= 0 and flag[i] = true
-            // then available = available - need
-            // set flag[i] = False 
-            // print some stuff here 
-            // available = avilable + max
-            // print some stuff
-            // append i to sequence array
-            // set counter to 0
-            // bankerAlgo(max, need, available, flag)
-        // else increment counter by 1 and repeat steps
-
-    // printf("No Of Resources: %d\n", noOfResources);
-    // for (int i = 0; i < noOfResource; i++){
-    //     printf("Test\n");
-    //     printf("%d\n", available[i]);
-    // }
-    // Count number of False in Flag array
+// Function for Banker's Algorithm 
+void bankerAlgo(int max[][noOfResources], int need[][noOfResources], int available[], int flag[], int processIndex, int noOfProcess, int noOfResources){ 
     int counterFlag = 0;
-    // Base Case: Once all process has been allocated, return to main function
+    // Base Case 
+    // Check if all the process has been allocated resources
     for (int i = 0; i < noOfProcess; i ++){
         if (flag[i] == TRUE){
             counterFlag += 1;
         }
     }
+    // If all process flag are TRUE; function will terminate
     if (counterFlag == noOfProcess){
         return;
     }
-     // Recursive case
-     else {
+    // Recursive Case
+    else {
+        // Unsafe Safe: The available resource is not able to satisfy any of the process request
         if (processIndex > noOfProcess){
             printf("--- SYSTEM IS IN UNSAFE STATE ---\n");
             printf("Available resources: ");
+            // display the number of available resource
             for (int i = 0; i < noOfResources; i++){
                 printf("%d ", available[i]);
             }
+            // display the number of resources needed by the processes that has not receive the max resources 
             printf("\n\nNEEDED RESOURCE FOR UNALLOCATED PROCESSES \n");
             for (int i = 0; i < noOfProcess; i++){
                 if (flag[i] == FALSE){
@@ -151,47 +148,52 @@ void bankerAlgo(int max[][noOfResources], int need[][noOfResources], int availab
             }
             exit(0);
         } else {
-            // Count resource type: available is more then need
             int availableCounter = 0;
+            // counter for (available - need) condition
             for (int resourceIndex = 0; resourceIndex < noOfResources; resourceIndex++){
                 if (available[resourceIndex] - need[processIndex][resourceIndex] >= 0){
                     availableCounter += 1;
                 }
             }
+            // Check if there's enough available resource to satisfy process need
+            // Check if the process flag is in FALSE state
             if ((availableCounter == noOfResources) && (flag[processIndex] == FALSE)){
                 for (int resourceIndex = 0; resourceIndex < noOfResources; resourceIndex++){
                     available[resourceIndex] -= need[processIndex][resourceIndex];
                 }
                 flag[processIndex] = TRUE;
 
-                // Print out the available resource here after allocating max resource to process
+                // Display available resource after allocating resource to the process
                 printf("Available Resource after Allocation to process P%d: [", processIndex);
                 for (int i = 0; i < noOfResources; i++){
                      printf("%d, ", available[i]);
                 }
                 printf("]\n");
 
+                // Process return all held resource back to the system
                 for (int resourceIndex = 0; resourceIndex < noOfResources; resourceIndex++){
                     available[resourceIndex] += max[processIndex][resourceIndex];
                 }
-                // Print out the available resource after retreiving resource by from process
+
+                // Display available resources after the process return the resource to the system
                 printf("Available Resource after Retrieving resource from process P%d: [", processIndex);
                 for (int i = 0; i < noOfResources; i++){
                      printf("%d, ", available[i]);
                 }
                 printf("]\n");
 
-                // append process to string or something
-
+                // Continue to call itself recursive until all process flag is set to TRUE
                 bankerAlgo(max, need, available, flag, 0, noOfProcess, noOfResources);
             } else {
+                // Check not enough available rsource or process state is set to TRUE
+                // increment process Index and call itself recursivly
                 bankerAlgo(max, need, available, flag, processIndex + 1, noOfProcess, noOfResources);
             }
         }
     }
 }
 
-//Scan for total instance for resource A, B, C, D
+//Functon to read the total instance of resources 
 void readResource(int total[], int noOfResources, int choice){
     for (int i = 0; i < noOfResources; i++){
         printf("Enter total number of instances %c: ", resourcetype[i]);
@@ -208,12 +210,14 @@ void readResource(int total[], int noOfResources, int choice){
     printf("\n");
 }
 
+// Function to read the max resource a process needs
 void readMax(int max[][noOfResources], int noOfProcess, int noOfResources, int total[]){
     for (int i = 0; i < noOfProcess; i++){
         printf("Enter number of max resource for process %d\n", i+1);
         for (int j = 0; j < noOfResources; j++){
             printf("Resource %c: ", resourcetype[j]);
             scanf("%d", &max[i][j]);
+            // the max number of resource a process needs cannot be more than number of resources
             if (max[i][j] > total[j]){
                 printf("Process Max value cannot be more than number of total resource. \n");
                 exit(0);
@@ -222,12 +226,14 @@ void readMax(int max[][noOfResources], int noOfProcess, int noOfResources, int t
     }
 }
 
+// Function to read the allocation resource for a process
 void readAllocation(int allocation[][noOfResources], int noOfProcess, int noOfResources, int max[][noOfResources]){
     for (int i = 0; i < noOfProcess; i++){
         printf("Enter number of allocation resource for process %d\n", i+1);
         for (int j = 0; j < noOfResources; j++){
             printf("Resource %c: ", resourcetype[j]);
             scanf("%d", &allocation[i][j]);
+            // the allocation resource cannot be more than the number of resources
             if (allocation[i][j] > max[i][j]){
                 printf("Process Allocation value cannot be more than process Max value. \n");
                 exit(0);
@@ -236,6 +242,8 @@ void readAllocation(int allocation[][noOfResources], int noOfProcess, int noOfRe
     }
 }
 
+// Function to calculate Need matrix
+// Need = Allocation - Need
 void calculateNeed(int allocation[][noOfResources], int max[][noOfResources], int need[][noOfResources], int noOfProcess, int noOfResources){
     for (int i = 0; i < noOfProcess; i++){
         for (int j = 0; j < noOfResources; j++){
@@ -244,19 +252,18 @@ void calculateNeed(int allocation[][noOfResources], int max[][noOfResources], in
     }
 }
 
+// Function to calculate available vector
 void calculateAvailable(int allocation[][noOfResources], int total[] ,int available[], int noOfProcess, int noOfResources){
-
     int totalAllocation[noOfResources];
     for (int i = 0; i < noOfResources; i++){
         totalAllocation[i] = 0;
     }
-
     for (int i = 0; i < noOfResources; i++){
         for (int j = 0; j < noOfProcess; j++){
             totalAllocation[i] += allocation[j][i];
         }
     }
-
+    // Total number of allocated resources cannot be more than the total number of resources
     for (int i = 0; i < noOfResources; i++){
         available[i] = total[i] - totalAllocation[i];
         if(available[i] < 0){
@@ -265,23 +272,3 @@ void calculateAvailable(int allocation[][noOfResources], int total[] ,int availa
         }
     }
 }
-
-
-// Replace number with alphbet for resource type 
-
-
-//Test Code
-/*
-for (int i = 0; i < noOfResources; i++){
-    printf("%d\n", total[i]);
-}
-*/
-
-/*
-for (int i = 0; i < noOfProcess; i++){  
-            for (int j = 0; j < noOfResources; j++){
-                printf("%d ", max[i][j]);
-            }
-            printf("\n");
-        }
-*/
