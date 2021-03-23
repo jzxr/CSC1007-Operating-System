@@ -67,6 +67,11 @@ int main(){
         printf("Enter the number of resources(between 1-6): ");
         scanf("%d", &noOfResources);
 
+        if (noOfResources < 1 || noOfResources > 6){
+            printf("Invalid number of resources \n");
+            exit(0);
+        }
+
         int allocation[noOfProcess][noOfResources];
         int max[noOfProcess][noOfResources];
         int need[noOfProcess][noOfResources];
@@ -94,7 +99,7 @@ int main(){
 }
 
 //Check Error Here
-void bankerAlgo(int max[][100], int need[][100], int available[], int flag[], int processIndex, int noOfProcess, int noOfResource){ //First call is alwaays 0 for processIndex
+void bankerAlgo(int max[][noOfResources], int need[][noOfResources], int available[], int flag[], int processIndex, int noOfProcess, int noOfResources){ //First call is alwaays 0 for processIndex
     // if all Flag = False then break
         // if available - need >= 0 and flag[i] = true
             // then available = available - need
@@ -107,8 +112,11 @@ void bankerAlgo(int max[][100], int need[][100], int available[], int flag[], in
             // bankerAlgo(max, need, available, flag)
         // else increment counter by 1 and repeat steps
 
-    
-
+    // printf("No Of Resources: %d\n", noOfResources);
+    // for (int i = 0; i < noOfResource; i++){
+    //     printf("Test\n");
+    //     printf("%d\n", available[i]);
+    // }
     // Count number of False in Flag array
     int counterFlag = 0;
     // Base Case: Once all process has been allocated, return to main function
@@ -171,9 +179,9 @@ void bankerAlgo(int max[][100], int need[][100], int available[], int flag[], in
 
                 // append process to string or something
 
-                bankerAlgo(max, need, available, flag, 0, noOfProcess, noOfResource);
+                bankerAlgo(max, need, available, flag, 0, noOfProcess, noOfResources);
             } else {
-                bankerAlgo(max, need, available, flag, processIndex + 1, noOfProcess, noOfResource);
+                bankerAlgo(max, need, available, flag, processIndex + 1, noOfProcess, noOfResources);
             }
         }
     }
