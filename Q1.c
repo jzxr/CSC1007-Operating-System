@@ -61,7 +61,7 @@ int main(){
         printf("\n--- SYSTEM IS IN SAFE STATE ---\n");
     }
     // User is able to dymanically insert value of process and resources
-    else if (choice = 2){
+    else if (choice == 2){
 
         printf("Enter the number of process(between 1-6): ");
         scanf("%d", &noOfProcess);
@@ -106,7 +106,7 @@ int main(){
         printf("\n--- SYSTEM IS IN SAFE STATE ---\n");
         
     } else {
-        printf("Enter Invalid option. \n");
+        printf("Entered Invalid option. \n");
         exit(0);
     }
 }
@@ -130,7 +130,7 @@ void bankerAlgo(int max[][noOfResources], int need[][noOfResources], int availab
         // Unsafe Safe: The available resource is not able to satisfy any of the process request
         if (processIndex > noOfProcess){
             printf("--- SYSTEM IS IN UNSAFE STATE ---\n");
-            printf("Available resources: ");
+            printf("Available instances: ");
             // display the number of available resource
             for (int i = 0; i < noOfResources; i++){
                 printf("%d ", available[i]);
@@ -210,16 +210,16 @@ void readResource(int total[], int noOfResources, int choice){
     printf("\n");
 }
 
-// Function to read the max resource a process needs
+// Function to read the max instances a process needs
 void readMax(int max[][noOfResources], int noOfProcess, int noOfResources, int total[]){
     for (int i = 0; i < noOfProcess; i++){
-        printf("Enter number of max resource for process %d\n", i+1);
+        printf("Enter number of MAX allocation instances for resources in process %d\n", i+1);
         for (int j = 0; j < noOfResources; j++){
             printf("Resource %c: ", resourcetype[j]);
             scanf("%d", &max[i][j]);
-            // the max number of resource a process needs cannot be more than number of resources
+            // the max number of instance a process needs cannot be more than the total number of instance
             if (max[i][j] > total[j]){
-                printf("Process Max value cannot be more than number of total resource. \n");
+                printf("Process instance number cannot be more than the number of total instance. \n");
                 exit(0);
             }
         }
@@ -229,7 +229,7 @@ void readMax(int max[][noOfResources], int noOfProcess, int noOfResources, int t
 // Function to read the allocation resource for a process
 void readAllocation(int allocation[][noOfResources], int noOfProcess, int noOfResources, int max[][noOfResources]){
     for (int i = 0; i < noOfProcess; i++){
-        printf("Enter number of allocation resource for process %d\n", i+1);
+        printf("Enter number of allocation instances for resources in process %d\n", i+1);
         for (int j = 0; j < noOfResources; j++){
             printf("Resource %c: ", resourcetype[j]);
             scanf("%d", &allocation[i][j]);
@@ -263,11 +263,11 @@ void calculateAvailable(int allocation[][noOfResources], int total[] ,int availa
             totalAllocation[i] += allocation[j][i];
         }
     }
-    // Total number of allocated resources cannot be more than the total number of resources
+    // Total number of allocated instances cannot be more than the total number of instances
     for (int i = 0; i < noOfResources; i++){
         available[i] = total[i] - totalAllocation[i];
         if(available[i] < 0){
-            printf("Total Allocation of Resource cannot be more then total resource. \n");
+            printf("Total Allocation of Instances cannot be more then total instances. \n");
             exit(0);
         }
     }
