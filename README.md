@@ -3,37 +3,343 @@
 <!-- TOC -->autoauto- [1. CSC1007 Operating System](#1-csc1007-operating-system)auto    - [1.1. Banker's Algorithm](#11-bankers-algorithm)auto        - [1.1.1. Header for your function](#111-header-for-your-function)auto    - [1.2. Memory Management in Operating System](#12-memory-management-in-operating-system)auto        - [1.2.1. Biggest Partition Size](#121-biggest-partition-size)auto        - [1.2.2. Smallest Partition Size](#122-smallest-partition-size)auto        - [1.2.3. User Input](#123-user-input)auto        - [1.2.4. Reset Partition Size](#124-reset-partition-size)auto        - [1.2.5. First Fit Algorithm](#125-first-fit-algorithm)auto        - [1.2.6. Best Fit Algorithm](#126-best-fit-algorithm)auto        - [1.2.7. Worst Fit Algorithm](#127-worst-fit-algorithm)autoauto<!-- /TOC -->
 
 ## 1.1. Banker's Algorithm
-
 ---
+Description
 
 Given six processes to be allocated and four resources types (A, B, C, D), the values of the allocation matrix of the processes for Allocation[6][4] and the values of the Max matrix of the processes is Max[6][4].
 
-The user can input the total available resources of each type, has the options to enter the allocation matrix and max matrix of the program. It shows the process of the whole safe state and unsafe state based on the calculation.
+The user can input the total instances of each type, has the options to enter the allocation matrix and max matrix of the program. It shows the process of the whole safe state and unsafe state based on the calculation using Banker's Algorithm.
+
+We have included some libraries, define some variable as well as function prototype.
+
+#include <stdio.h>
+#include <stdlib.h>
+#define RESOURCE 4
+#define PROCESS 6
+#define TRUE 1
+#define FALSE 0
+
+// Global variable
+int noOfProcess;
+int noOfResources;
+int maxOfResources;
+char resourcetype[] = {'A', 'B', 'C', 'D', 'E', 'F'};
+
+//Function Prototype
+void readResource(int total[], int noOfResources, int choice);
+void readMax(int max[][noOfResources], int noOfProcess, int noOfResources, int total[]);
+void readAllocation(int allocation[][noOfResources], int noOfProcess, int noOfResources, int max[][noOfResources]);
+void calculateNeed(int allocation[][noOfResources], int max[][noOfResources], int need[][noOfResources], int noOfProcess, int noOfResources);
+void calculateAvailable(int allocation[][noOfResources], int total[] ,int available[], int noOfProcess, int noOfResources);
+void bankerAlgo(int max[][noOfResources], int need[][noOfResources], int available[], int flag[], int processIndex, int noOfProcess, int noOfResource);
 
 ---
 
-### 1.1.1. Enter Choice
+### 1.1.1. Main Function for Banker's Algorithm
 
 ---
-User can enter choice for question 1 to choose between hard coded or user input
+Description
+User can enter choice 1 for hardcoded and choice 2 for user input based on assignment question 1. 
 
-*//Put code*
+int main(){
+    // Defining Variables 
+    int choice;
+    int need[PROCESS][RESOURCE];
+    
+    printf("Select Choice: \n1) Hardcoded  \n2) User input\n");
+    printf("User Choice: ");
+    scanf("%d", &choice);
+
+    // Follows assignment requirement
+    if (choice == 1){
+        // Allocation and Max resources stated in the specification
+        // initializing variables 
+        int allocation[6][4] = {{2, 1, 3, 3},
+                                {2, 3, 1, 2},
+                                {3, 3, 3, 1},
+                                {2, 1, 3, 4},
+                                {3, 2, 2, 5},
+                                {2, 1, 2, 3}};
+        int max[6][4] = {{7, 3, 4, 5},
+                         {8, 6, 2, 5},
+                         {9, 5, 5, 6},
+                         {6, 4, 6, 5},
+                         {8, 3, 2, 8},
+                         {8, 3, 2, 3}};
+
+        int need[PROCESS][RESOURCE];
+        int available[RESOURCE];
+        int total[RESOURCE];
+
+        readResource(total, RESOURCE, choice);
+        calculateNeed(allocation, max, need, PROCESS, RESOURCE);
+        calculateAvailable(allocation, total, available, PROCESS, RESOURCE);
+
+        // Set each process flag to FALSE, indicating resources has not been allocated 
+        // before calling Banker's Algorithm 
+        int flag[PROCESS] = {FALSE, FALSE, FALSE, FALSE, FALSE, FALSE};
+        bankerAlgo(max, need, available, flag, 0, PROCESS, RESOURCE);
+        // System is in safe state if Banker's Algorithm is able to run till completion
+        printf("\n--- SYSTEM IS IN SAFE STATE ---\n");
+    }
+    // User is able to dymanically insert value of process and resources
+    else if (choice == 2){
+
+        printf("Enter the number of process(between 1-6): ");
+        scanf("%d", &noOfProcess);
+        
+        if (noOfProcess < 1 || noOfProcess > 6){
+            printf("Invalid number of process. \n");
+            exit(0);
+        }
+
+        printf("Enter the number of resources(between 1-6): ");
+        scanf("%d", &noOfResources);
+
+        if (noOfResources < 1 || noOfResources > 6){
+            printf("Invalid number of resources \n");
+            exit(0);
+        }
+
+        // initializing variables 
+        int allocation[noOfProcess][noOfResources];
+        int max[noOfProcess][noOfResources];
+        int need[noOfProcess][noOfResources];
+        int available[noOfResources];
+        int total[noOfResources];
+        
+        readResource(total, noOfResources, choice);
+        readMax(max, noOfProcess, noOfResources, total);
+        printf("\n");
+        readAllocation(allocation, noOfProcess, noOfResources, max);
+        calculateNeed(allocation, max, need, noOfProcess, noOfResources);
+        calculateAvailable(allocation, total, available, noOfProcess, noOfResources);
+        printf("\n");
+
+        // Set each process flag to FALSE, indicating resources has not been allocated 
+        // before calling Banker's Algorithm 
+        int flag[noOfProcess];
+        for (int i = 0; i < noOfProcess; i++){
+            flag[i] = FALSE;
+        }
+
+        bankerAlgo(max, need, available, flag, 0, noOfProcess, noOfResources);
+        // System is in safe state if Banker's Algorithm is able to run till completion
+        printf("\n--- SYSTEM IS IN SAFE STATE ---\n");
+        
+    } else {
+        printf("Entered Invalid option. \n");
+        exit(0);
+    }
+}
+
 ---
 
-### 1.1.2. Hard Coded
+### 1.1.2. Function for Banker's Algorithm
 ---
-When user enter 1 as choice, the system will calculate the 6 processes and 4 resources types.
+Description
+This is the calculation part for our Banker's Algorithm
+
+// Function for Banker's Algorithm 
+void bankerAlgo(int max[][noOfResources], int need[][noOfResources], int available[], int flag[], int processIndex, int noOfProcess, int noOfResources){ 
+    int counterFlag = 0;
+    // Base Case 
+    // Check if all the process has been allocated resources
+    for (int i = 0; i < noOfProcess; i ++){
+        if (flag[i] == TRUE){
+            counterFlag += 1;
+        }
+    }
+    // If all process flag are TRUE; function will terminate
+    if (counterFlag == noOfProcess){
+        return;
+    }
+    // Recursive Case
+    else {
+        // Unsafe Safe: The available resource is not able to satisfy any of the process request
+        if (processIndex > noOfProcess){
+            printf("--- SYSTEM IS IN UNSAFE STATE ---\n");
+            printf("Available instances: ");
+            // display the number of available resource
+            for (int i = 0; i < noOfResources; i++){
+                printf("%d ", available[i]);
+            }
+            // display the number of resources needed by the processes that has not receive the max resources 
+            printf("\n\nNEEDED RESOURCE FOR UNALLOCATED PROCESSES \n");
+            for (int i = 0; i < noOfProcess; i++){
+                if (flag[i] == FALSE){
+                    printf("Process %d: ", i);
+                    for (int j = 0; j < noOfResources; j++){
+                        printf("%d ", need[i][j]);
+                    }
+                    printf("\n");
+                }
+            }
+            exit(0);
+        } else {
+            int availableCounter = 0;
+            // counter for (available - need) condition
+            for (int resourceIndex = 0; resourceIndex < noOfResources; resourceIndex++){
+                if (available[resourceIndex] - need[processIndex][resourceIndex] >= 0){
+                    availableCounter += 1;
+                }
+            }
+            // Check if there's enough available resource to satisfy process need
+            // Check if the process flag is in FALSE state
+            if ((availableCounter == noOfResources) && (flag[processIndex] == FALSE)){
+                for (int resourceIndex = 0; resourceIndex < noOfResources; resourceIndex++){
+                    available[resourceIndex] -= need[processIndex][resourceIndex];
+                }
+                flag[processIndex] = TRUE;
+
+                // Display available resource after allocating resource to the process
+                printf("Available Resource after Allocation to process P%d: [", processIndex);
+                for (int i = 0; i < noOfResources; i++){
+                     printf("%d, ", available[i]);
+                }
+                printf("]\n");
+
+                // Process return all held resource back to the system
+                for (int resourceIndex = 0; resourceIndex < noOfResources; resourceIndex++){
+                    available[resourceIndex] += max[processIndex][resourceIndex];
+                }
+
+                // Display available resources after the process return the resource to the system
+                printf("Available Resource after Retrieving resource from process P%d: [", processIndex);
+                for (int i = 0; i < noOfResources; i++){
+                     printf("%d, ", available[i]);
+                }
+                printf("]\n");
+
+                // Continue to call itself recursive until all process flag is set to TRUE
+                bankerAlgo(max, need, available, flag, 0, noOfProcess, noOfResources);
+            } else {
+                // Check not enough available rsource or process state is set to TRUE
+                // increment process Index and call itself recursivly
+                bankerAlgo(max, need, available, flag, processIndex + 1, noOfProcess, noOfResources);
+            }
+        }
+    }
+}
 
 ---
 
-### 1.1.3. User Input
+### 1.1.3. Read the total instances of resources
 ---
-When user enter 2 as choice, they have the option to enter the allocation matrix, max matrix and total available resources of each type.
+Description
+This function ask the users to enter the total number of instances and check if the number of instances hits the minimum requirement for the resources for question 1 hardcoded part.
+
+//Functon to read the total instance of resources 
+void readResource(int total[], int noOfResources, int choice){
+    for (int i = 0; i < noOfResources; i++){
+        printf("Enter total number of instances %c: ", resourcetype[i]);
+        scanf("%d", &total[i]);
+        // Resource A, B, C, D needs to be larger than 14, 11, 14, 18 respectively 
+        if (choice == 1){
+            int check[RESOURCE] = {14,11,14,18};
+            if (total[i] < check[i]){
+                printf("Minimum number of instance for resource %c must be %d or above \n", resourcetype[i], check[i]);
+                exit(0);
+            }
+        }
+    }   
+    printf("\n");
+}
 
 ---
 
-### 1.1.4. Banker's Algorithm
+### 1.1.4. Read the max instances of the process needs
 ---
+Description
+This function ask the users to enter the number of MAX allocation instances for the resources in the process and check if the number of instances allocate to the resources is more than the one they defined earlier on.
+
+// Function to read the max instances a process needs
+void readMax(int max[][noOfResources], int noOfProcess, int noOfResources, int total[]){
+    for (int i = 0; i < noOfProcess; i++){
+        printf("Enter number of MAX allocation instances for resources in process %d\n", i+1);
+        for (int j = 0; j < noOfResources; j++){
+            printf("Resource %c: ", resourcetype[j]);
+            scanf("%d", &max[i][j]);
+            // the max number of instance a process needs cannot be more than the total number of instance
+            if (max[i][j] > total[j]){
+                printf("Process instance number cannot be more than the number of total instance. \n");
+                exit(0);
+            }
+        }
+    }
+}
+
+---
+
+### 1.1.5. Read the allocation resources for a process
+---
+Description
+This function ask the users to enter the number of allocation instances for resources in the process and check if the allocateed resources is more than the number of resources.
+
+// Function to read the allocation resource for a process
+void readAllocation(int allocation[][noOfResources], int noOfProcess, int noOfResources, int max[][noOfResources]){
+    for (int i = 0; i < noOfProcess; i++){
+        printf("Enter number of allocation instances for resources in process %d\n", i+1);
+        for (int j = 0; j < noOfResources; j++){
+            printf("Resource %c: ", resourcetype[j]);
+            scanf("%d", &allocation[i][j]);
+            // the allocation resource cannot be more than the number of resources
+            if (allocation[i][j] > max[i][j]){
+                printf("Process Allocation value cannot be more than process Max value. \n");
+                exit(0);
+            }
+        }
+    }
+}
+
+---
+
+
+### 1.1.6. Calculate need matrix
+---
+Description
+This function calculates the need matrix
+
+// Function to read the allocation resource for a process
+// Function to calculate Need matrix
+// Need = Allocation - Need
+void calculateNeed(int allocation[][noOfResources], int max[][noOfResources], int need[][noOfResources], int noOfProcess, int noOfResources){
+    for (int i = 0; i < noOfProcess; i++){
+        for (int j = 0; j < noOfResources; j++){
+            need[i][j] = max[i][j] - allocation[i][j];
+        }
+    }
+}
+
+---
+
+
+### 1.1.7. Calculate the available vector
+---
+Description
+This function calculate the available vector and check if the total number of allocated instances is more than the total number of instances.
+
+// Function to calculate available vector
+void calculateAvailable(int allocation[][noOfResources], int total[] ,int available[], int noOfProcess, int noOfResources){
+    int totalAllocation[noOfResources];
+    for (int i = 0; i < noOfResources; i++){
+        totalAllocation[i] = 0;
+    }
+    for (int i = 0; i < noOfResources; i++){
+        for (int j = 0; j < noOfProcess; j++){
+            totalAllocation[i] += allocation[j][i];
+        }
+    }
+    // Total number of allocated instances cannot be more than the total number of instances
+    for (int i = 0; i < noOfResources; i++){
+        available[i] = total[i] - totalAllocation[i];
+        if(available[i] < 0){
+            printf("Total Allocation of Instances cannot be more then total instances. \n");
+            exit(0);
+        }
+    }
+}
+
 ---
 
 ## 1.2. Memory Management in Operating System
