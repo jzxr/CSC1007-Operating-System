@@ -47,8 +47,6 @@ Given with 12 memory partitions available: 160 KB, 350 KB, 650 KB, 80 KB, 410 KB
 
 ---
 
-Description
-
 Function to get the biggest partition size
 
 ```C
@@ -431,4 +429,54 @@ void worstFit(){
     //Reset memoryPartition array to default state at start.
     resetPartition();
 }
+```
+
+---
+
+### 1.2.8. Main Function for Memory Management
+
+---
+
+Function to allow user to enter the options and execute the functions.
+
+```C
+//Libaries
+#include <stdio.h>
+#include "Q2.h"
+
+//Main function
+int main()
+{
+    int choice;
+    bool exit_condition = true;
+    printf("\nDynamic memory Allocation demonstration program\n");
+    getMaxSize();
+    getMinSize();
+    getInput();
+    while (exit_condition)
+    {
+        printf("\nPlease Enter one of the options: 1.First-fit, 2.Best-fit, 3.Worst-fit 4.Exit\n");
+        scanf("%d", &choice);
+
+        switch (choice)
+        {
+        case 1:
+            firstFit();
+            break;
+        case 2:
+            bestFit();
+            break;
+        case 3:
+            worstFit();
+            break;
+        case 4:
+            exit_condition = false;
+            break;
+        default:
+            printf("Invalid options entered.\n");
+        }
+    }
+    return 0;
+}
+
 ```
