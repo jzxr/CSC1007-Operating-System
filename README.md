@@ -1,10 +1,8 @@
 # 1. CSC1007 Operating System
 
-<!-- TOC -->autoauto- [1. CSC1007 Operating System](#1-csc1007-operating-system)auto    - [1.1. Banker's Algorithm](#11-bankers-algorithm)auto        - [1.1.1. Header for your function](#111-header-for-your-function)auto    - [1.2. Memory Management in Operating System](#12-memory-management-in-operating-system)auto        - [1.2.1. Biggest Partition Size](#121-biggest-partition-size)auto        - [1.2.2. Smallest Partition Size](#122-smallest-partition-size)auto        - [1.2.3. User Input](#123-user-input)auto        - [1.2.4. Reset Partition Size](#124-reset-partition-size)auto        - [1.2.5. First Fit Algorithm](#125-first-fit-algorithm)auto        - [1.2.6. Best Fit Algorithm](#126-best-fit-algorithm)auto        - [1.2.7. Worst Fit Algorithm](#127-worst-fit-algorithm)autoauto<!-- /TOC -->
-
 ## 1.1. Banker's Algorithm
+
 ---
-Description
 
 Given six processes to be allocated and four resources types (A, B, C, D), the values of the allocation matrix of the processes for Allocation[6][4] and the values of the Max matrix of the processes is Max[6][4].
 
@@ -12,6 +10,7 @@ The user can input the total instances of each type, has the options to enter th
 
 We have included some libraries, define some variable as well as function prototype.
 
+```C
 #include <stdio.h>
 #include <stdlib.h>
 #define RESOURCE 4
@@ -32,6 +31,7 @@ void readAllocation(int allocation[][noOfResources], int noOfProcess, int noOfRe
 void calculateNeed(int allocation[][noOfResources], int max[][noOfResources], int need[][noOfResources], int noOfProcess, int noOfResources);
 void calculateAvailable(int allocation[][noOfResources], int total[] ,int available[], int noOfProcess, int noOfResources);
 void bankerAlgo(int max[][noOfResources], int need[][noOfResources], int available[], int flag[], int processIndex, int noOfProcess, int noOfResource);
+```
 
 ---
 
@@ -39,8 +39,9 @@ void bankerAlgo(int max[][noOfResources], int need[][noOfResources], int availab
 
 ---
 Description
-User can enter choice 1 for hardcoded and choice 2 for user input based on assignment question 1. 
+User can enter choice 1 for hardcoded and choice 2 for user input based on assignment question 1.
 
+```C
 int main(){
     // Defining Variables 
     int choice;
@@ -132,14 +133,16 @@ int main(){
         exit(0);
     }
 }
+```
 
 ---
 
 ### 1.1.2. Function for Banker's Algorithm
+
 ---
-Description
 This is the calculation part for our Banker's Algorithm
 
+```C
 // Function for Banker's Algorithm 
 void bankerAlgo(int max[][noOfResources], int need[][noOfResources], int available[], int flag[], int processIndex, int noOfProcess, int noOfResources){ 
     int counterFlag = 0;
@@ -221,14 +224,17 @@ void bankerAlgo(int max[][noOfResources], int need[][noOfResources], int availab
         }
     }
 }
+```
 
 ---
 
 ### 1.1.3. Read the total instances of resources
+
 ---
 Description
 This function ask the users to enter the total number of instances and check if the number of instances hits the minimum requirement for the resources for question 1 hardcoded part.
 
+```C
 //Functon to read the total instance of resources 
 void readResource(int total[], int noOfResources, int choice){
     for (int i = 0; i < noOfResources; i++){
@@ -245,14 +251,16 @@ void readResource(int total[], int noOfResources, int choice){
     }   
     printf("\n");
 }
+```
 
 ---
 
 ### 1.1.4. Read the max instances of the process needs
+
 ---
-Description
 This function ask the users to enter the number of MAX allocation instances for the resources in the process and check if the number of instances allocate to the resources is more than the one they defined earlier on.
 
+```C
 // Function to read the max instances a process needs
 void readMax(int max[][noOfResources], int noOfProcess, int noOfResources, int total[]){
     for (int i = 0; i < noOfProcess; i++){
@@ -268,14 +276,16 @@ void readMax(int max[][noOfResources], int noOfProcess, int noOfResources, int t
         }
     }
 }
+```
 
 ---
 
 ### 1.1.5. Read the allocation resources for a process
+
 ---
-Description
 This function ask the users to enter the number of allocation instances for resources in the process and check if the allocateed resources is more than the number of resources.
 
+```C
 // Function to read the allocation resource for a process
 void readAllocation(int allocation[][noOfResources], int noOfProcess, int noOfResources, int max[][noOfResources]){
     for (int i = 0; i < noOfProcess; i++){
@@ -291,15 +301,16 @@ void readAllocation(int allocation[][noOfResources], int noOfProcess, int noOfRe
         }
     }
 }
+```
 
 ---
-
 
 ### 1.1.6. Calculate need matrix
+
 ---
-Description
 This function calculates the need matrix
 
+```C
 // Function to read the allocation resource for a process
 // Function to calculate Need matrix
 // Need = Allocation - Need
@@ -310,15 +321,16 @@ void calculateNeed(int allocation[][noOfResources], int max[][noOfResources], in
         }
     }
 }
+```
 
 ---
-
 
 ### 1.1.7. Calculate the available vector
+
 ---
-Description
 This function calculate the available vector and check if the total number of allocated instances is more than the total number of instances.
 
+```C
 // Function to calculate available vector
 void calculateAvailable(int allocation[][noOfResources], int total[] ,int available[], int noOfProcess, int noOfResources){
     int totalAllocation[noOfResources];
@@ -339,6 +351,7 @@ void calculateAvailable(int allocation[][noOfResources], int total[] ,int availa
         }
     }
 }
+```
 
 ---
 
@@ -349,7 +362,55 @@ Given with 12 memory partitions available: 160 KB, 350 KB, 650 KB, 80 KB, 410 KB
 
 ---
 
-### 1.2.1. Biggest Partition Size
+### 1.2.1. Main Function for Memory Management
+
+---
+
+Function to allow user to enter the options and execute the functions.
+
+```C
+//Libaries
+#include <stdio.h>
+#include "Q2.h"
+
+//Main function
+int main()
+{
+    int choice;
+    bool exit_condition = true;
+    printf("\nDynamic memory Allocation demonstration program\n");
+    getMaxSize();
+    getMinSize();
+    getInput();
+    while (exit_condition)
+    {
+        printf("\nPlease Enter one of the options: 1.First-fit, 2.Best-fit, 3.Worst-fit 4.Exit\n");
+        scanf("%d", &choice);
+
+        switch (choice)
+        {
+        case 1:
+            firstFit();
+            break;
+        case 2:
+            bestFit();
+            break;
+        case 3:
+            worstFit();
+            break;
+        case 4:
+            exit_condition = false;
+            break;
+        default:
+            printf("Invalid options entered.\n");
+        }
+    }
+    return 0;
+}
+
+```
+
+### 1.2.2. Biggest Partition Size
 
 ---
 
@@ -374,7 +435,7 @@ void getMaxSize()
 
 ---
 
-### 1.2.2. Smallest Partition Size
+### 1.2.3. Smallest Partition Size
 
 ---
 
@@ -401,7 +462,7 @@ void getMinSize()
 
 ---
 
-### 1.2.3. User Input
+### 1.2.4. User Input
 
 ---
 
@@ -437,7 +498,7 @@ void getInput()
 
 ---
 
-### 1.2.4. Reset Partition Size
+### 1.2.5. Reset Partition Size
 
 ---
 
@@ -467,7 +528,7 @@ void resetPartition()
 
 ---
 
-### 1.2.5. First Fit Algorithm
+### 1.2.6. First Fit Algorithm
 
 ---
 
@@ -549,7 +610,7 @@ void firstFit()
 
 ---
 
-### 1.2.6. Best Fit Algorithm
+### 1.2.7. Best Fit Algorithm
 
 ---
 Best Fit Algorithm is to allocate the process size to the smallest
@@ -644,7 +705,7 @@ void bestFit()
 
 ---
 
-### 1.2.7. Worst Fit Algorithm
+### 1.2.8. Worst Fit Algorithm
 
 ---
 
@@ -735,54 +796,4 @@ void worstFit(){
     //Reset memoryPartition array to default state at start.
     resetPartition();
 }
-```
-
----
-
-### 1.2.8. Main Function for Memory Management
-
----
-
-Function to allow user to enter the options and execute the functions.
-
-```C
-//Libaries
-#include <stdio.h>
-#include "Q2.h"
-
-//Main function
-int main()
-{
-    int choice;
-    bool exit_condition = true;
-    printf("\nDynamic memory Allocation demonstration program\n");
-    getMaxSize();
-    getMinSize();
-    getInput();
-    while (exit_condition)
-    {
-        printf("\nPlease Enter one of the options: 1.First-fit, 2.Best-fit, 3.Worst-fit 4.Exit\n");
-        scanf("%d", &choice);
-
-        switch (choice)
-        {
-        case 1:
-            firstFit();
-            break;
-        case 2:
-            bestFit();
-            break;
-        case 3:
-            worstFit();
-            break;
-        case 4:
-            exit_condition = false;
-            break;
-        default:
-            printf("Invalid options entered.\n");
-        }
-    }
-    return 0;
-}
-
 ```

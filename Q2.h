@@ -62,7 +62,7 @@ void getMinSize()
 void getInput()
 {
     int count;
-    printf("\nMaximum Partition Size avaliable: %d KB\n", Max);
+    printf("\nMaximum Partition Size available: %d KB\n", Max);
     for (count = 0; count < 10; count++)
     {
         printf("Enter size of processes: %d in KB\n", count + 1);
@@ -70,7 +70,7 @@ void getInput()
 
         if (userInput[count] > Max)
         {
-            printf("The size of procees entered exceeded the Maximum avaliable partition of: %d KB, Please re-enter\n", Max);
+            printf("The size of process entered exceeded the Maximum available partition of: %d KB, Please re-enter\n", Max);
             count--;
         }
     }
