@@ -107,14 +107,13 @@ void firstFit()
     int processID, processSize, partitionID, partitionSize, count, differences = 0;
     int assign = -1;
     
-     //Match all process to suitable memory partition
+    //Match all process to suitable memory partition
     for (processID = 0; processID < 10; processID++)
     {
         processSize = userInput[processID];
         for (partitionID = 0; partitionID < 12; partitionID++)
         {
             partitionSize = memoryPartitions[partitionID];
-            
             //assign memory partiton to process.
             if (partitionSize >= processSize)
             {
@@ -122,8 +121,6 @@ void firstFit()
                 differences = partitionSize - processSize;
                 partitionSize -= processSize;
                 assign = partitionID;
-                
-               
                 break;
             }
             //do not need to display if partition is not allocated
