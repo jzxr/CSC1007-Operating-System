@@ -98,6 +98,12 @@ void resetPartition()
     memoryPartitions[9] = 130;
     memoryPartitions[10] = 260;
     memoryPartitions[11] = 830;
+    int count;
+    for(count =0; count<10; count++)
+    {
+        assignPartitions[count] = 0;
+        unassignProcess[count] = 1;
+    }
 }
 //End
 
