@@ -1,7 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-#define RESOURCE 4
-#define PROCESS 6
 #define TRUE 1
 #define FALSE 0
 
@@ -22,7 +20,6 @@ void bankerAlgo(int max[][noOfResources], int need[][noOfResources], int availab
 int main(){
     // Defining Variables 
     int choice;
-    int need[PROCESS][RESOURCE];
     
     printf("Select Choice: \n1) Question 1  \n2) Question 1 with user input\n");
     printf("User Choice: ");
@@ -32,6 +29,9 @@ int main(){
     if (choice == 1){
         // Allocation and Max resources stated in the specification
         // initializing variables 
+        noOfProcess = 6;
+        noOfResources = 4;
+
         int allocation[6][4] = {{2, 1, 3, 3},
                                 {2, 3, 1, 2},
                                 {3, 3, 3, 1},
@@ -45,18 +45,21 @@ int main(){
                          {8, 3, 2, 8},
                          {8, 3, 2, 3}};
 
-        int need[PROCESS][RESOURCE];
-        int available[RESOURCE];
-        int total[RESOURCE];
+        int need[noOfProcess][noOfResources];
+        int available[noOfResources];
+        int total[noOfResources];
 
-        readResource(total, RESOURCE, choice);
-        calculateNeed(allocation, max, need, PROCESS, RESOURCE);
-        calculateAvailable(allocation, total, available, PROCESS, RESOURCE);
+        readResource(total, noOfResources, choice);
+        calculateNeed(allocation, max, need, noOfProcess, noOfResources);
+        calculateAvailable(allocation, total, available, noOfProcess, noOfResources);
 
         // Set each process flag to FALSE, indicating resources has not been allocated 
         // before calling Banker's Algorithm 
-        int flag[PROCESS] = {FALSE, FALSE, FALSE, FALSE, FALSE, FALSE};
-        bankerAlgo(max, need, available, flag, 0, PROCESS, RESOURCE);
+        int flag[noOfProcess];
+        for (int i = 0; i < noOfProcess; i++){
+            flag[i] = FALSE;
+        }
+        bankerAlgo(max, need, available, flag, 0, noOfProcess, noOfResources);
         // System is in safe state if Banker's Algorithm is able to run till completion
         printf("\n--- SYSTEM IS IN SAFE STATE ---\n");
     }
@@ -176,7 +179,7 @@ void bankerAlgo(int max[][noOfResources], int need[][noOfResources], int availab
                 }
 
                 // Display available resources after the process return the resource to the system
-                printf("Available Instance after Retrieving resource from process P%d: [", processIndex);
+                printf("Available after Retrieving resource from process P%d: [", processIndex);
                 for (int i = 0; i < noOfResources; i++){
                      printf("%d, ", available[i]);
                 }
@@ -200,7 +203,7 @@ void readResource(int total[], int noOfResources, int choice){
         scanf("%d", &total[i]);
         // Resource A, B, C, D needs to be larger than 14, 11, 14, 18 respectively 
         if (choice == 1){
-            int check[RESOURCE] = {14,11,14,18};
+            int check[4] = {14,11,14,18};
             if (total[i] < check[i]){
                 printf("Minimum number of instance for resource %c must be %d or above \n", resourcetype[i], check[i]);
                 exit(0);
@@ -243,7 +246,7 @@ void readAllocation(int allocation[][noOfResources], int noOfProcess, int noOfRe
 }
 
 // Function to calculate Need matrix
-// Need = Max - Allocation
+// Need = Allocation - Need
 void calculateNeed(int allocation[][noOfResources], int max[][noOfResources], int need[][noOfResources], int noOfProcess, int noOfResources){
     for (int i = 0; i < noOfProcess; i++){
         for (int j = 0; j < noOfResources; j++){
