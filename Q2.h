@@ -104,7 +104,7 @@ void resetPartition()
 //Firstfit Function
 void firstFit()
 {
-    int processID, processSize, partitionID, partitionSize, count = 0;
+    int processID, processSize, partitionID, partitionSize, count, differences = 0;
     int assign = -1;
     
      //Match all process to suitable memory partition
@@ -121,6 +121,7 @@ void firstFit()
                 assignPartitions[processID] = partitionSize;
                 partitionSize -= processSize;
                 assign = partitionID;
+               
                 break;
             }
             //do not need to display if partition is not allocated
@@ -142,12 +143,13 @@ void firstFit()
 
     //Print allocated process
     printf("\nAllocated Process");
-    printf("\nProcess No.\tProcess Size.\tAllocated Memory Size.\n");
+    printf("\nProcess No.\tProcess Size.\tAllocated Memory Size.\tRemaining Memory Size\n");
     for (processID = 0; processID < 10; processID++)
     {
         if (assignPartitions[processID] != 0)
         {
-            printf("%d \t\t%d KB \t\t%d KB\n", processID + 1, userInput[processID], assignPartitions[processID]);
+            differences = assignPartitions[processID] - userInput[processID];
+            printf("%d \t\t%d KB \t\t%d KB\t\t\t%d KB\n", processID + 1, userInput[processID], assignPartitions[processID], differences);
         }
     }
 
@@ -224,14 +226,15 @@ void bestFit()
         }
     }
 
-    //print allocated process
+    //Print allocated process
     printf("\nAllocated Process");
-    printf("\nProcess No.\tProcess Size.\tAllocated Memory Size.\n");
+    printf("\nProcess No.\tProcess Size.\tAllocated Memory Size.\tRemaining Memory Size\n");
     for (processID = 0; processID < 10; processID++)
     {
-        if (unassignProcess[processID] != 0)
+        if (assignPartitions[processID] != 0)
         {
-            printf("%d \t\t%d KB \t\t%d KB\n", processID + 1, userInput[processID], assignPartitions[processID]);
+            differences = assignPartitions[processID] - userInput[processID];
+            printf("%d \t\t%d KB \t\t%d KB\t\t\t%d KB\n", processID + 1, userInput[processID], assignPartitions[processID], differences);
         }
     }
 
@@ -307,14 +310,15 @@ void worstFit(){
         }
     }
 
-    //print allocated process
+    //Print allocated process
     printf("\nAllocated Process");
-    printf("\nProcess No.\tProcess Size.\tAllocated Memory Size.\n");
+    printf("\nProcess No.\tProcess Size.\tAllocated Memory Size.\tRemaining Memory Size\n");
     for (processID = 0; processID < 10; processID++)
     {
-        if (unassignProcess[processID] != 0)
+        if (assignPartitions[processID] != 0)
         {
-            printf("%d \t\t%d KB \t\t%d KB\n", processID + 1, userInput[processID], assignPartitions[processID]);
+            differences = assignPartitions[processID] - userInput[processID];
+            printf("%d \t\t%d KB \t\t%d KB\t\t\t%d KB\n", processID + 1, userInput[processID], assignPartitions[processID], differences);
         }
     }
 
