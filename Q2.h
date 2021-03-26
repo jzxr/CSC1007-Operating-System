@@ -119,8 +119,10 @@ void firstFit()
             if (partitionSize >= processSize)
             {
                 assignPartitions[processID] = partitionSize;
+                differences = partitionSize - processSize;
                 partitionSize -= processSize;
                 assign = partitionID;
+                
                
                 break;
             }
@@ -133,7 +135,7 @@ void firstFit()
         //Check if memorypartition is assigned to a process. if so empty it from array.
         if (assign >= 0)
         {
-            memoryPartitions[assign] = 0;
+            memoryPartitions[assign] = differences;
         }
         else
         {
@@ -218,7 +220,7 @@ void bestFit()
         //Check if memorypartition is assigned to a process. if so empty it from array.
         if (assign >= 0)
         {
-            memoryPartitions[assign] = 0;
+            memoryPartitions[assign] = smallest;
         }
         else
         {
@@ -302,7 +304,7 @@ void worstFit(){
         //Check if memorypartition is assigned to a process. if so empty it from array.
         if (assign >= 0)
         {
-            memoryPartitions[assign] = 0;
+            memoryPartitions[assign] = largest;
         }
         else
         {
