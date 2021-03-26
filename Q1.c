@@ -24,7 +24,7 @@ int main(){
     int choice;
     int need[PROCESS][RESOURCE];
     
-    printf("Select Choice: \n1) Hardcoded  \n2) User input\n");
+    printf("Select Choice: \n1) Question 1  \n2) Question 1 with user input\n");
     printf("User Choice: ");
     scanf("%d", &choice);
 
@@ -176,7 +176,7 @@ void bankerAlgo(int max[][noOfResources], int need[][noOfResources], int availab
                 }
 
                 // Display available resources after the process return the resource to the system
-                printf("Available Instance after Retrieving resource from process P%d: [", processIndex);
+                printf("Available  after Retrieving resource from process P%d: [", processIndex);
                 for (int i = 0; i < noOfResources; i++){
                      printf("%d, ", available[i]);
                 }
