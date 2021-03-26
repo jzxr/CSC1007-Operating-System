@@ -179,7 +179,7 @@ void bankerAlgo(int max[][noOfResources], int need[][noOfResources], int availab
                 }
 
                 // Display available resources after the process return the resource to the system
-                printf("Available after Retrieving resource from process P%d: [", processIndex);
+                printf("Available Instance after Retrieving resource from process P%d: [", processIndex);
                 for (int i = 0; i < noOfResources; i++){
                      printf("%d, ", available[i]);
                 }
