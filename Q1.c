@@ -136,7 +136,7 @@ void bankerAlgo(int max[][noOfResources], int need[][noOfResources], int availab
                 printf("%d ", available[i]);
             }
             // display the number of resources needed by the processes that has not receive the max resources 
-            printf("\n\nNEEDED RESOURCE FOR UNALLOCATED PROCESSES \n");
+            printf("\n\nNEEDED INSTANCES FOR UNALLOCATED PROCESSES \n");
             for (int i = 0; i < noOfProcess; i++){
                 if (flag[i] == FALSE){
                     printf("Process %d: ", i);
@@ -176,7 +176,7 @@ void bankerAlgo(int max[][noOfResources], int need[][noOfResources], int availab
                 }
 
                 // Display available resources after the process return the resource to the system
-                printf("Available  after Retrieving resource from process P%d: [", processIndex);
+                printf("Available after Retrieving resource from process P%d: [", processIndex);
                 for (int i = 0; i < noOfResources; i++){
                      printf("%d, ", available[i]);
                 }
