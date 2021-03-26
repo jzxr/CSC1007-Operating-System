@@ -158,12 +158,12 @@ void firstFit()
         }
     }
 
-    //Print unallocated process
+    //Print Unallocated Process
     printf("\nUnallocated Process");
     printf("\nProcess No.\tProcess Size.\n");
     for (processID = 0; processID < 10; processID++)
     {
-        if (assignPartitions[processID] == 0)
+        if (unassignProcess[processID] == 0)
         {
             printf("%d \t\t%d KB\n", processID + 1, userInput[processID]);
         }
