@@ -176,7 +176,7 @@ void bankerAlgo(int max[][noOfResources], int need[][noOfResources], int availab
                 }
 
                 // Display available resources after the process return the resource to the system
-                printf("Available after Retrieving resource from process P%d: [", processIndex);
+                printf("Available Instance after Retrieving resource from process P%d: [", processIndex);
                 for (int i = 0; i < noOfResources; i++){
                      printf("%d, ", available[i]);
                 }
@@ -243,7 +243,7 @@ void readAllocation(int allocation[][noOfResources], int noOfProcess, int noOfRe
 }
 
 // Function to calculate Need matrix
-// Need = Allocation - Need
+// Need = Max - Allocation
 void calculateNeed(int allocation[][noOfResources], int max[][noOfResources], int need[][noOfResources], int noOfProcess, int noOfResources){
     for (int i = 0; i < noOfProcess; i++){
         for (int j = 0; j < noOfResources; j++){
