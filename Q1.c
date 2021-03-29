@@ -201,9 +201,14 @@ void readResource(int total[], int noOfResources, int choice){
     for (int i = 0; i < noOfResources; i++){
         printf("Enter total number of instances %c: ", resourcetype[i]);
         scanf("%d", &total[i]);
-        // Resource A, B, C, D needs to be larger than 14, 11, 14, 18 respectively 
+        // Resource needs to be a positive number
+        if (total[i] < 0){
+                printf("Minimum number of instance for resource %c must be a positive number \n", resourcetype[i]);
+                exit(0);
+        }
         if (choice == 1){
             int check[4] = {14,11,14,18};
+            // Resource A, B, C, D needs to be larger than 14, 11, 14, 18 respectively 
             if (total[i] < check[i]){
                 printf("Minimum number of instance for resource %c must be %d or above \n", resourcetype[i], check[i]);
                 exit(0);
@@ -220,6 +225,11 @@ void readMax(int max[][noOfResources], int noOfProcess, int noOfResources, int t
         for (int j = 0; j < noOfResources; j++){
             printf("Resource %c: ", resourcetype[j]);
             scanf("%d", &max[i][j]);
+            // the max number of instance must be a positive number
+            if (max[i][j] < 0){
+                printf("Process instance number must be a positive number \n");
+                exit(0);
+            }
             // the max number of instance a process needs cannot be more than the total number of instance
             if (max[i][j] > total[j]){
                 printf("Process instance number cannot be more than the number of total instance. \n");
@@ -236,6 +246,11 @@ void readAllocation(int allocation[][noOfResources], int noOfProcess, int noOfRe
         for (int j = 0; j < noOfResources; j++){
             printf("Resource %c: ", resourcetype[j]);
             scanf("%d", &allocation[i][j]);
+            // the allocation number of instance must be a positive number
+            if (allocation[i][j] < 0){
+                printf("Process instance number must be a positive number \n");
+                exit(0);
+            }
             // the allocation resource cannot be more than the number of resources
             if (allocation[i][j] > max[i][j]){
                 printf("Process Allocation value cannot be more than process Max value. \n");
